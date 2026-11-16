@@ -1,13 +1,43 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+:root {
+    --bg-app: #0b1120;
+    --bg-surface: #131c31;
+    --bg-surface-elevated: #1b2640;
+    --border-subtle: rgba(255, 255, 255, 0.09);
+    --border-focus: #38bdf8;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --shadow-lg:
+        0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
 
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: "Roboto", sans-serif;
-    font-optical-sizing: auto;
+    font-family:
+        "Plus Jakarta Sans",
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
 }
 
 body {
     width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-app);
+    background-image:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(56, 189, 248, 0.08),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 85%,
+            rgba(155, 93, 229, 0.08),
+            transparent 35%
+        );
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
 }
