@@ -21,8 +21,8 @@ export default function App() {
     const [postureIndex, setPostureIndex] = useState<number>(4);
 
     const [streamUrl, setStreamUrl] = useState<StreamUrl>({
-        host: "esp32cam.local:81", // Alamat mDNS dan port dari ESP32
-        path: "stream",            // Endpoint video bawaan CameraWebServer
+        host: "esp32cam.local:81",
+        path: "stream",
     });
 
     const canvas = useRef<HTMLCanvasElement>(null);
