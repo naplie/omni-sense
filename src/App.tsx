@@ -21,8 +21,8 @@ export default function App() {
     const [postureIndex, setPostureIndex] = useState<number>(4);
 
     const [streamUrl, setStreamUrl] = useState<StreamUrl>({
-        host: "esp32cam.local:81",
-        path: "stream",
+        host: "esp32cam.local:81", // Alamat mDNS dan port dari ESP32
+        path: "stream", // Endpoint video bawaan CameraWebServer
     });
 
     const canvas = useRef<HTMLCanvasElement>(null);
@@ -104,13 +104,13 @@ export default function App() {
                                     PoseLandmarker.POSE_CONNECTIONS,
                                     {
                                         color: "#00FF00",
-                                        lineWidth: 1,
+                                        lineWidth: 2,
                                     },
                                 );
                                 drawingUtils.drawLandmarks(landmark, {
                                     color: "#FF0000",
                                     lineWidth: 2,
-                                    radius: 2,
+                                    radius: 3,
                                 });
                             }
                         }
@@ -142,60 +142,106 @@ export default function App() {
         });
     }
 
+    const isConnected = postureIndex !== 4;
+    const activeCard = cardData[postureIndex];
+
     return (
-        <main>
-            <section
-                className="input-field-section"
-                style={
-                    postureIndex === 4
-                        ? {
-                              backgroundColor: cardData[4].backgroundColor,
-                              color: cardData[4].textColor,
-                          }
-                        : {
-                              backgroundColor: cardData[0].backgroundColor,
-                              color: cardData[0].textColor,
-                          }
-                }
-            >
-                <h1>Silahkan Masukkan IP Dibawah!</h1>
-                <div>
-                    <p>http://</p>
-                    <input
-                        type="text"
-                        name="host"
-                        value={streamUrl?.host}
-                        onChange={handleChange<HTMLInputElement>}
-                    />
-                    <p>/</p>
-                    <select
-                        name="path"
-                        onChange={handleChange<HTMLSelectElement>}
-                        value={streamUrl.path}
-                    >
-                        <option value="video">video</option>
-                        <option value="stream">stream</option>
-                    </select>
+        <main className="app-container">
+            <header className="app-header">
+                <div className="brand">
+                    <span className="brand-dot" />
+                    <h2>Posture Guard Monitor</h2>
                 </div>
-            </section>
-            <section className="img-section">
-                <img
-                    ref={img}
-                    src={`http://${streamUrl.host}/${streamUrl.path}`}
-                    crossOrigin="anonymous"
-                    onError={() => {
-                        setPostureIndex(4);
+                <div
+                    className={`connection-pill ${isConnected ? "is-connected" : ""}`}
+                >
+                    <span className="indicator" />
+                    {isConnected ? "Kamera Terhubung" : "Menunggu Stream"}
+                </div>
+            </header>
+
+            <div className="dashboard-grid">
+                <section
+                    className="img-section"
+                    style={{
+                        borderColor: isConnected
+                            ? activeCard.backgroundColor
+                            : undefined,
                     }}
-                />
-                <canvas ref={canvas} id="myCanvas"></canvas>
-            </section>
-            <MessageCard
-                header={cardData[postureIndex].header}
-                body={cardData[postureIndex].body}
-                img={cardData[postureIndex].img}
-                backgroundColor={cardData[postureIndex].backgroundColor}
-                textColor={cardData[postureIndex].textColor}
-            />
+                >
+                    <img
+                        ref={img}
+                        src={`http://${streamUrl.host}/${streamUrl.path}`}
+                        crossOrigin="anonymous"
+                        alt="ESP32-CAM Live Stream"
+                        onError={() => {
+                            setPostureIndex(4);
+                        }}
+                    />
+                    <canvas ref={canvas} id="myCanvas"></canvas>
+
+                    {!isConnected && (
+                        <div className="camera-placeholder">
+                            <div className="placeholder-icon">
+                                <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                    <circle cx="12" cy="13" r="3" />
+                                </svg>
+                            </div>
+                            <strong>Kamera Belum Terhubung</strong>
+                            <span>
+                                Pastikan ESP32-CAM aktif dan alamat IP di panel
+                                konfigurasi sudah sesuai.
+                            </span>
+                        </div>
+                    )}
+                </section>
+
+                <div className="side-panel">
+                    <section className="input-field-section">
+                        <div className="section-label">
+                            <h1>Konfigurasi Stream ESP32</h1>
+                            <span>Endpoint</span>
+                        </div>
+                        <div className="url-bar">
+                            <p>http://</p>
+                            <input
+                                type="text"
+                                name="host"
+                                placeholder="esp32cam.local:81"
+                                value={streamUrl?.host}
+                                onChange={handleChange<HTMLInputElement>}
+                            />
+                            <p>/</p>
+                            <select
+                                name="path"
+                                onChange={handleChange<HTMLSelectElement>}
+                                value={streamUrl.path}
+                            >
+                                <option value="video">video</option>
+                                <option value="stream">stream</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <MessageCard
+                        header={activeCard.header}
+                        body={activeCard.body}
+                        img={activeCard.img}
+                        backgroundColor={activeCard.backgroundColor}
+                        textColor={activeCard.textColor}
+                    />
+                </div>
+            </div>
         </main>
     );
 }
