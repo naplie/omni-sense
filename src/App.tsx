@@ -150,7 +150,7 @@ export default function App() {
             <header className="app-header">
                 <div className="brand">
                     <span className="brand-dot" />
-                    <h2>Posture Guard Monitor</h2>
+                    <h2>Omni Sense</h2>
                 </div>
                 <div
                     className={`connection-pill ${isConnected ? "is-connected" : ""}`}
